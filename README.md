@@ -12,8 +12,8 @@ Manager for World of Warcraft addons
 
 ## Installation
 
-Download the file from the github release page and put it somewhere on
-your path.
+Download the file from the [github release page](https://github.com/wttw/wowaddon/releases/tag/v0.1.0),
+unzip it and put it somewhere on your path.
 
 Run `wowaddon environment`. If it can't find your World of Warcraft
 installation in the normal places you can set the environment variable
