@@ -6,13 +6,15 @@ Manager for World of Warcraft addons
 * Install addons from Curse and TukUI
 * Uninstall addons
 * Update addons
+* Search for new addons
 * List installed addons, showing which are "out of date"
 * Show addon metadata
 * Show which directories are used by which addons
+* No complex setup, it discovers your current set of addons
 
 ## Installation
 
-Download the file from the [github release page](https://github.com/wttw/wowaddon/releases/tag/v0.1.0),
+Download the file from the [github release page](https://github.com/wttw/wowaddon/releases/latest),
 unzip it and put it somewhere on your path.
 
 Run `wowaddon environment`. If it can't find your World of Warcraft
@@ -23,9 +25,9 @@ WOWDIR to override it.
 
 To install [Fishing Buddy](https://mods.curse.com/addons/wow/fishingbuddy)
 run `wowaddons install fishingbuddy`. The name needed is the one used for
-the addon at the source you're fetching the addon from. For addons installed
-from Curse, it's the name you see in the URL of the page, such as
-`deadly-boss-mods` or `weakauras-2`.
+the addon at the source you're fetching the addon from or returned by
+`wowaddon search`. For addons installed from Curse, it's the name you see
+in the URL of the page, such as `deadly-boss-mods` or `weakauras-2`.
 
 To list the installed addons run `wowaddons list`.
 
