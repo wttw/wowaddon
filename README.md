@@ -24,19 +24,19 @@ WOWDIR to override it.
 ## Usage
 
 To install [Fishing Buddy](https://mods.curse.com/addons/wow/fishingbuddy)
-run `wowaddons install fishingbuddy`. The name needed is the one used for
+run `wowaddon install fishingbuddy`. The name needed is the one used for
 the addon at the source you're fetching the addon from or returned by
 `wowaddon search`. For addons installed from Curse, it's the name you see
 in the URL of the page, such as `deadly-boss-mods` or `weakauras-2`.
 
-To list the installed addons run `wowaddons list`.
+To list the installed addons run `wowaddon list`.
 
 To update everything that needs to be updated run `wowaddon update`.
 
 To sync with new addons if they've been installed manually, or to create
-your first configuration file run `wowaddons bootstrap`.
+your first configuration file run `wowaddon bootstrap`.
 
-To search for new addons for your druid to install run `wowaddons search druid`.
+To search for new addons for your druid to install run `wowaddon search druid`.
 
 ```
 NAME:
