@@ -53,5 +53,8 @@ func uninstall(c *cli.Context) error {
 			}
 		}
 	}
+	if !config.KeepCache {
+		purgeCache()
+	}
 	return nil
 }

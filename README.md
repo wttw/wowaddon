@@ -27,10 +27,14 @@ the addon at the source you're fetching the addon from. For addons installed
 from Curse, it's the name you see in the URL of the page, such as
 `deadly-boss-mods` or `weakauras-2`.
 
-To list the installed addons (that `wowaddon` is aware of - if you've
-manually unzipped addons it doesn't know about them) run `wowaddons list`.
+To list the installed addons run `wowaddons list`.
 
 To update everything that needs to be updated run `wowaddon update`.
+
+To sync with new addons if they've been installed manually, or to create
+your first configuration file run `wowaddons bootstrap`.
+
+To search for new addons for your druid to install run `wowaddons search druid`.
 
 ```
 NAME:
@@ -40,23 +44,26 @@ USAGE:
    wowaddon [global options] command [command options] [arguments...]
 
 VERSION:
-   0.1.0
+   0.2.0
 
 AUTHOR(S):
    Steve Atkins <steve@blighty.com>
 
 COMMANDS:
-     install            Install addon `NAME`
+     install, i         Install addon `NAME`
+     update, u          Update all addons
+     search, s          Search for new addons
      uninstall          Uninstall addon `NAME`
      reinstall          Reinstall all addons
-     update             Update all addons
      checkupdate        List addons that can be updated
      folders, list, ls  List addons and their folders
      blame              Show which addon created a folder
      environment, env   Show environment
      info               Show information about installed addons
      fullinfo           Show toc metadata about installed addons
+     bootstrap          Create a configuration file from existing addons
      dlurl              Find a download URL
+     help, h            Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --wowdir value, --dir value, -d value  WoW base directory [$WOWDIR]
@@ -70,9 +77,7 @@ GLOBAL OPTIONS:
 
 Install pre-requisites and build
 ```
-go get github.com/urfave/cli
-go get github.com/fatih/color
-go get github.com/kardianos/osext
+go get -u .
 go build
 ```
 
@@ -93,7 +98,5 @@ Coloured text works on Windows 10, OS X and (probably) Linux. It doesn't
 work in a vanilla Windows 7 command prompt. It's still perfectly usable,
 but not as pretty.
 
-An obvious need is to be able to search for addons, but that data isn't
-made easily available anywhere.
 ## License
 [Two-clause BSD](LICENSE)

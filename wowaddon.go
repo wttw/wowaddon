@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/kardianos/osext"
 	"github.com/urfave/cli"
@@ -12,24 +13,30 @@ import (
 
 const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
+const catalogFilename = "addoncatalog.json"
 
 var wowDir string
 var addonDir string
 var configFile string
 var addonSource string
 var cacheDir string
+var catalogFile string
 
 // Addon holds the configuration and state for a single addon
 type Addon struct {
 	Source    string   `json:"source"`
-	Version   int      `json:"version"`
+	Version   string   `json:"version"`
 	Folders   []string `json:"folders"`
 	Interface int      `json:"interface"`
+	Zip       string   `json:"zipfile"`
 }
 
 // Config holds the configuration file
 type Config struct {
-	Addons map[string]Addon `json:"addons"`
+	KeepCache         bool             `json:"keepcache"`
+	NextCatalogUpdate time.Time        `json:"next_catalog_update"`
+	CatalogDownloaded time.Time        `json:"catalog_retrieved"`
+	Addons            map[string]Addon `json:"addons"`
 }
 
 var config = Config{
@@ -40,7 +47,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "wowaddon"
 	app.Usage = "Install WoW addons"
-	app.Version = "0.1.0"
+	app.Version = "0.2.0"
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "Steve Atkins",
@@ -70,7 +77,7 @@ func main() {
 	app.Before = setup
 	app.Commands = []cli.Command{
 		{
-			Name:   "install",
+			Name:   "install, i",
 			Usage:  "Install addon `NAME`",
 			Action: install,
 			Flags: []cli.Flag{
@@ -78,6 +85,23 @@ func main() {
 					Name:        "source, s",
 					Usage:       "Install from `SOURCE`",
 					Destination: &addonSource,
+				},
+			},
+		},
+		{
+			Name:   "update, u",
+			Usage:  "Update all addons",
+			Action: update,
+		},
+		{
+			Name:   "search, s",
+			Usage:  "Search for new addons",
+			Action: search,
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:        "pattern, regexp, regex, r",
+					Usage:       "use regular expressions",
+					Destination: &useRegex,
 				},
 			},
 		},
@@ -90,11 +114,6 @@ func main() {
 			Name:   "reinstall",
 			Usage:  "Reinstall all addons",
 			Action: reinstall,
-		},
-		{
-			Name:   "update",
-			Usage:  "Update all addons",
-			Action: update,
 		},
 		{
 			Name:   "checkupdate",
@@ -127,6 +146,11 @@ func main() {
 			Name:   "fullinfo",
 			Usage:  "Show toc metadata about installed addons",
 			Action: fullinfo,
+		},
+		{
+			Name:   "bootstrap",
+			Usage:  "Create a configuration file from existing addons",
+			Action: bootstrap,
 		},
 		{
 			Name:   "dlurl",
@@ -163,19 +187,31 @@ func setup(*cli.Context) error {
 		cacheDir = filepath.Join(wowDir, "Interface", cacheDirname)
 	}
 
+	if catalogFile == "" {
+		catalogFile = filepath.Join(wowDir, catalogFilename)
+	}
+
 	cf, err := os.Open(configFile)
 	if err == nil {
 		defer cf.Close()
 		jsonParser := json.NewDecoder(cf)
 		err = jsonParser.Decode(&config)
 		if err != nil {
-			return cli.NewExitError(fmt.Sprintf("I couldn't parse configuration file '%s': %s\nMaybe fix it up, or delete it and start over?", configFile, err.Error()), 1)
+			fmt.Printf("I couldn't parse configuration file '%s': %s\nMaybe fix it up, or delete it and start over?\n", configFile, err.Error())
+			os.Exit(1)
+		}
+	} else {
+		fmt.Printf("Setting up your configuration...\n")
+		err = bootstrapConfig()
+		if err != nil {
+			fmt.Printf("Failed to set up configuration: %s\n", err.Error())
 		}
 	}
 
 	err = os.MkdirAll(cacheDir, 0755)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("Can't create directory '%s': %s", cacheDir, err.Error()), 1)
+		fmt.Printf("Can't create directory '%s': %s\n", cacheDir, err.Error())
+		os.Exit(1)
 	}
 
 	return nil

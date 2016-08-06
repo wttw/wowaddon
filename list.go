@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -11,43 +10,72 @@ import (
 	"github.com/urfave/cli"
 )
 
-func list(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
-	warn := color.New(color.FgYellow).SprintFunc()
+func wowVersion() int {
 	cf, err := readWowConfig()
-	wowVersion := 0
+	wowV := 0
 	if err == nil {
 		version, ok := cf["lastAddonVersion"]
 		if ok {
 			nver, err := strconv.Atoi(version)
 			if err == nil {
-				wowVersion = nver
+				wowV = nver
 			}
 		}
 	}
+	return wowV
+}
+
+func list(c *cli.Context) error {
+	failed := color.New(color.FgRed).SprintFunc()
+	success := color.New(color.FgGreen).SprintFunc()
+	warn := color.New(color.FgYellow).SprintFunc()
+
+	wowV := wowVersion()
+
+	dirs := map[string]bool{}
+	files, err := ioutil.ReadDir(addonDir)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		if !f.IsDir() {
+			continue
+		}
+		if strings.HasPrefix(f.Name(), ".") {
+			continue
+		}
+		// fmt.Printf("dir %s found\n", f.Name())
+		dirs[f.Name()] = false
+	}
+
 	for name, addon := range config.Addons {
 		installed := true
 		for _, d := range addon.Folders {
-			dirpath := filepath.Join(addonDir, d)
-			fi, err := os.Stat(dirpath)
-			if err != nil {
+			_, ok := dirs[d]
+			if !ok {
 				installed = false
-			} else {
-				if !fi.IsDir() {
-					installed = false
-				}
 			}
+			dirs[d] = true
 		}
 		if !installed {
 			fmt.Printf("%s: not installed\n", failed(name))
 			continue
 		}
-		if wowVersion != 0 && addon.Interface != 0 && addon.Interface < wowVersion {
-			fmt.Printf("%s: (out of date) version %d installed in %s\n", warn(name), addon.Version, strings.Join(addon.Folders, ", "))
+		if wowV != 0 && addon.Interface != 0 && addon.Interface < wowV {
+			fmt.Printf("%s: (out of date) version %s installed\n", warn(name), addon.Version)
 		} else {
-			fmt.Printf("%s: version %d installed in %s\n", success(name), addon.Version, strings.Join(addon.Folders, ", "))
+			fmt.Printf("%s: version %s installed\n", success(name), addon.Version)
 		}
+	}
+	orphans := []string{}
+	for dirname, seen := range dirs {
+		if !seen {
+			orphans = append(orphans, dirname)
+		}
+	}
+	if len(orphans) > 0 {
+		fmt.Printf("%s: %s\n", warn("Unmanaged addon directories"), strings.Join(orphans, ", "))
 	}
 	return nil
 }
@@ -67,11 +95,11 @@ func fullinfo(c *cli.Context) error {
 			fmt.Printf("%s: not installed\n", failed(name))
 			continue
 		}
-		fmt.Printf("%s: version %d\n", success(name), addon.Version)
+		fmt.Printf("%s: version %s\n", success(name), addon.Version)
 		for _, dir := range addon.Folders {
 			toc, err := readToc(dir)
 			if err != nil {
-				fmt.Printf("  %s: err\n", failed(dir))
+				fmt.Printf("  %s: failed to read toc: %s\n", failed(dir), err.Error())
 				continue
 			}
 			fmt.Printf("  %s:\n", success(dir))
@@ -98,11 +126,12 @@ func info(c *cli.Context) error {
 			fmt.Printf("%s: not installed\n", failed(name))
 			continue
 		}
-		fmt.Printf("%s: version %d\n", success(name), addon.Version)
+		fmt.Printf("%s: version %s\n", success(name), addon.Version)
 		for _, dir := range addon.Folders {
+
 			toc, err := readToc(dir)
 			if err != nil {
-				fmt.Printf("  %s: err\n", failed(dir))
+				fmt.Printf("  %s: failed to read toc: %s\n", failed(dir), err.Error())
 				continue
 			}
 

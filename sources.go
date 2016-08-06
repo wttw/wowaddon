@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
 
 	"strings"
 
@@ -20,7 +19,7 @@ import (
 type AddonMeta struct {
 	Name        string
 	URL         string
-	Version     int
+	Version     string
 	Description string
 	Source      string
 }
@@ -85,16 +84,16 @@ func tukuiDownloadURL(name string) (AddonMeta, error) {
 	if err != nil {
 		return AddonMeta{}, err
 	}
-	parts := strings.Split(version, ".")
-	nver := 0
-	for _, part := range parts {
-		np, err := strconv.Atoi(part)
-		if err != nil {
-			return AddonMeta{}, fmt.Errorf("Tukui returned version '%s', which I couldn't parse: %s", version, err.Error())
-		}
-		nver = nver*1000 + np
-	}
-	ret.Version = nver
+	// parts := strings.Split(version, ".")
+	// nver := 0
+	// for _, part := range parts {
+	// 	np, err := strconv.Atoi(part)
+	// 	if err != nil {
+	// 		return AddonMeta{}, fmt.Errorf("Tukui returned version '%s', which I couldn't parse: %s", version, err.Error())
+	// 	}
+	// 	nver = nver*1000 + np
+	// }
+	ret.Version = version
 	return ret, nil
 }
 
@@ -132,9 +131,14 @@ func curseDownloadURL(name string) (AddonMeta, error) {
 		return AddonMeta{}, fmt.Errorf("Version for %s not found at Curse", name)
 	}
 
-	ret.Version, _ = strconv.Atoi(string(vermatch[1]))
+	ret.Version = string(vermatch[1])
 
 	return ret, nil
+}
+
+//wowinterfaceURL gets the download URL and version for an addon from wowinterfaceUrl
+func wowinterfaceURL(name string) (AddonMeta, error) {
+	return AddonMeta{}, fmt.Errorf("wowinterface not implemented")
 }
 
 func getZipfile(name string, url string, source string) (string, error) {
