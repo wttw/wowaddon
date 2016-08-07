@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/urfave/cli"
 )
@@ -83,6 +84,10 @@ func installFromMeta(meta AddonMeta) (Addon, error) {
 			defer writer.Close()
 
 			_, err = io.Copy(writer, zipped)
+			if err != nil {
+				return ret, err
+			}
+			err = os.Chtimes(elPath, time.Now(), f.ModTime())
 			if err != nil {
 				return ret, err
 			}
