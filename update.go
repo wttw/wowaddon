@@ -46,7 +46,7 @@ func update(c *cli.Context) error {
 			}
 		}
 		err = installAddon(name, addon.Source, "updated")
-		if err != nil {
+		if err == nil {
 			updated++
 		}
 	}

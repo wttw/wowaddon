@@ -77,9 +77,10 @@ func main() {
 	app.Before = setup
 	app.Commands = []cli.Command{
 		{
-			Name:   "install, i",
-			Usage:  "Install addon `NAME`",
-			Action: install,
+			Name:    "install",
+			Aliases: []string{"i"},
+			Usage:   "Install addon `NAME`",
+			Action:  install,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:        "source, s",
@@ -89,14 +90,16 @@ func main() {
 			},
 		},
 		{
-			Name:   "update, u",
-			Usage:  "Update all addons",
-			Action: update,
+			Name:    "update",
+			Aliases: []string{"u"},
+			Usage:   "Update all addons",
+			Action:  update,
 		},
 		{
-			Name:   "search, s",
-			Usage:  "Search for new addons",
-			Action: search,
+			Name:    "search",
+			Aliases: []string{"s"},
+			Usage:   "Search for new addons",
+			Action:  search,
 			Flags: []cli.Flag{
 				cli.BoolFlag{
 					Name:        "pattern, regexp, regex, r",
@@ -163,6 +166,7 @@ func main() {
 					Destination: &addonSource,
 				},
 			},
+			Hidden: true,
 		},
 		{
 			Name:   "releasetag",
