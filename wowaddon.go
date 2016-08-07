@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -15,7 +16,11 @@ const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
 const catalogFilename = "addoncatalog.json"
 
+// Version is the app version
+const Version = "0.3.0"
+
 var wowDir string
+var userAgent string
 var addonDir string
 var configFile string
 var addonSource string
@@ -47,7 +52,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "wowaddon"
 	app.Usage = "Install WoW addons"
-	app.Version = "0.2.0"
+	app.Version = Version
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "Steve Atkins",
@@ -72,6 +77,12 @@ func main() {
 			Usage:       "Use an alternate cache directory",
 			EnvVar:      "WOW_ADDON_CACHE",
 			Destination: &cacheDir,
+		},
+		cli.StringFlag{
+			Name:        "useragent",
+			Usage:       "Use this useragent for http requests",
+			EnvVar:      "WOW_ADDON_USERAGENT",
+			Destination: &userAgent,
 		},
 	}
 	app.Before = setup
@@ -182,7 +193,7 @@ func main() {
 	app.Run(os.Args)
 }
 
-func setup(*cli.Context) error {
+func setup(c *cli.Context) error {
 	err := findBaseDir()
 	if err != nil {
 		return err
@@ -202,6 +213,10 @@ func setup(*cli.Context) error {
 
 	if catalogFile == "" {
 		catalogFile = filepath.Join(wowDir, catalogFilename)
+	}
+
+	if userAgent == "" {
+		userAgent = fmt.Sprintf("wttw/wowaddon (%s)", c.App.Version)
 	}
 
 	cf, err := os.Open(configFile)
@@ -228,6 +243,16 @@ func setup(*cli.Context) error {
 	}
 
 	return nil
+}
+
+// Get gets a document as http.Get, with a custom user-agent
+func Get(url string) (*http.Response, error) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", "wttw/wowaddon")
+	return http.DefaultClient.Do(req)
 }
 
 func writeConfig() error {

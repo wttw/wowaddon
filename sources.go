@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -56,7 +55,7 @@ func tukString(project map[string]interface{}, name string) (string, error) {
 // tukuiDownloadURL gets the download URL and version for an addon from tukui
 func tukuiDownloadURL(name string) (AddonMeta, error) {
 	url := fmt.Sprintf("http://www.tukui.org/api.php?project=%s", name)
-	resp, err := http.Get(url)
+	resp, err := Get(url)
 	if err != nil {
 		return AddonMeta{}, err
 	}
@@ -100,7 +99,7 @@ func tukuiDownloadURL(name string) (AddonMeta, error) {
 // curseDownloadURL gets the download URL and version for an addon from curse
 func curseDownloadURL(name string) (AddonMeta, error) {
 	url := fmt.Sprintf("http://www.curse.com/addons/wow/%s/download", name)
-	resp, err := http.Get(url)
+	resp, err := Get(url)
 	if err != nil {
 		return AddonMeta{}, err
 	}
@@ -160,7 +159,7 @@ func getZipfile(name string, url string, source string) (string, error) {
 	}
 	defer os.Remove(tempfile.Name())
 
-	resp, err := http.Get(url)
+	resp, err := Get(url)
 	if err != nil {
 		return "", err
 	}

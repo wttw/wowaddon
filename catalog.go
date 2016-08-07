@@ -121,7 +121,13 @@ func loadCatalogFromZip() error {
 
 func fetchCatalog(current time.Time) error {
 	url := "https://api.github.com/repos/wttw/wowaddon/releases/latest"
-	resp, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+	// github ask that api users use a specific user-agent
+	req.Header.Set("User-Agent", fmt.Sprintf("wttw/wowaddon (%s)", Version))
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -165,7 +171,7 @@ func fetchCatalog(current time.Time) error {
 			return nil
 		}
 		fmt.Printf("Fetching catalog from %s\n", dlurl)
-		resp, err := http.Get(dlurl)
+		resp, err := Get(dlurl)
 		if err != nil {
 			return err
 		}

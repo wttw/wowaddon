@@ -49,7 +49,7 @@ USAGE:
    wowaddon [global options] command [command options] [arguments...]
 
 VERSION:
-   0.2.0
+   0.3.0
 
 AUTHOR(S):
    Steve Atkins <steve@blighty.com>
@@ -73,6 +73,7 @@ GLOBAL OPTIONS:
    --wowdir value, --dir value, -d value  WoW base directory [$WOWDIR]
    --config value, -c value               Use an alternate configuration file [$WOW_ADDON_CONFIG]
    --cache value                          Use an alternate cache directory [$WOW_ADDON_CACHE]
+   --useragent value                      Use this useragent for http requests [$WOW_ADDON_USERAGENT]
    --help, -h                             show help
    --version, -v                          print the version
 ```
@@ -84,7 +85,7 @@ All configuration is stored in your World of Warcraft base directory.
 The addons installed and managed by `wowaddon` are stored in the
 `addons.json` file, with a backup copy stored in `addons.json.bak`
 
-The catalog of know addons (used for bootstrapping and searching) is
+The catalog of known addons (used for bootstrapping and searching) is
 stored in `addoncatalog.json.zip` and `addoncatalog.json`. This will
 be fetched and updated automatically.
 
