@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -14,7 +13,6 @@ func bootstrap(c *cli.Context) error {
 }
 
 func bootstrapConfig() error {
-	success := color.New(color.FgGreen).SprintFunc()
 	err := loadCatalog()
 	if err != nil {
 		return err

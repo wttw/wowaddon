@@ -3,14 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
 func update(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
-	warn := color.New(color.FgYellow).SprintFunc()
 	var addons []string
 	if len(c.Args()) == 0 {
 		addons = make([]string, len(config.Addons))
@@ -58,8 +54,6 @@ func update(c *cli.Context) error {
 }
 
 func checkupdate(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
 	updated := 0
 	for name, addon := range config.Addons {
 		meta, err := downloadURL(name, addon.Source)

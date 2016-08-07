@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -26,10 +25,6 @@ func wowVersion() int {
 }
 
 func list(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
-	warn := color.New(color.FgYellow).SprintFunc()
-
 	wowV := wowVersion()
 
 	dirs := map[string]bool{}
@@ -81,8 +76,6 @@ func list(c *cli.Context) error {
 }
 
 func fullinfo(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
 	addons := c.Args()
 	if len(addons) == 0 {
 		for name := range config.Addons {
@@ -112,8 +105,6 @@ func fullinfo(c *cli.Context) error {
 }
 
 func info(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
 	addons := c.Args()
 	if len(addons) == 0 {
 		for name := range config.Addons {

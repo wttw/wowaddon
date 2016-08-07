@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/kardianos/osext"
 	"github.com/urfave/cli"
 )
@@ -26,6 +27,11 @@ var configFile string
 var addonSource string
 var cacheDir string
 var catalogFile string
+
+var failed = color.New(color.FgRed).SprintFunc()
+var success = color.New(color.FgGreen).SprintFunc()
+var warn = color.New(color.FgYellow).SprintFunc()
+var highlight = color.New(color.FgYellow).SprintFunc()
 
 // Addon holds the configuration and state for a single addon
 type Addon struct {
@@ -83,6 +89,11 @@ func main() {
 			Usage:       "Use this useragent for http requests",
 			EnvVar:      "WOW_ADDON_USERAGENT",
 			Destination: &userAgent,
+		},
+		cli.BoolTFlag{
+			Name:   "color,colour",
+			Usage:  "Use coloured output",
+			EnvVar: "WOW_ADDON_COLOUR",
 		},
 	}
 	app.Before = setup
@@ -194,6 +205,7 @@ func main() {
 }
 
 func setup(c *cli.Context) error {
+	color.NoColor = !c.BoolT("colour")
 	err := findBaseDir()
 	if err != nil {
 		return err

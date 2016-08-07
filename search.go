@@ -6,16 +6,12 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
 var useRegex bool
 
 func search(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
-	warn := color.New(color.FgYellow).SprintFunc()
 	wowV := wowVersion()
 
 	if len(c.Args()) == 0 {
@@ -60,7 +56,7 @@ func search(c *cli.Context) error {
 						if m[0] > idx {
 							r += n[idx:m[0]]
 						}
-						r += warn(n[m[0]:m[1]])
+						r += highlight(n[m[0]:m[1]])
 						idx = m[1]
 					}
 					r += n[idx:]

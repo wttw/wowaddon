@@ -5,13 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
 func uninstall(c *cli.Context) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	success := color.New(color.FgGreen).SprintFunc()
 	for _, name := range c.Args() {
 		addon, ok := config.Addons[name]
 		if !ok {

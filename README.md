@@ -47,13 +47,13 @@ NAME:
 
 USAGE:
    wowaddon [global options] command [command options] [arguments...]
-
+   
 VERSION:
    0.3.0
-
+   
 AUTHOR(S):
-   Steve Atkins <steve@blighty.com>
-
+   Steve Atkins <steve@blighty.com> 
+   
 COMMANDS:
      install, i         Install addon `NAME`
      update, u          Update all addons
@@ -74,8 +74,10 @@ GLOBAL OPTIONS:
    --config value, -c value               Use an alternate configuration file [$WOW_ADDON_CONFIG]
    --cache value                          Use an alternate cache directory [$WOW_ADDON_CACHE]
    --useragent value                      Use this useragent for http requests [$WOW_ADDON_USERAGENT]
+   --color, --colour                      Use coloured output [$WOW_ADDON_COLOUR]
    --help, -h                             show help
    --version, -v                          print the version
+   
 ```
 
 ## Configuration files
@@ -108,7 +110,8 @@ a similar tool written in Javascript/node.
 
 Coloured text works on Windows 10, OS X and (probably) Linux. It doesn't
 work in a vanilla Windows 7 command prompt. It's still perfectly usable,
-but not as pretty.
+but not as pretty. Coloured text can be suppressed by setting
+`WOW_ADDON_COLOUR=false`
 
 While it's tested on OS X, it isn't tested with a real WoW installation (I
 don't have the disk space for that).

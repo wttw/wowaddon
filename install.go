@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -118,8 +117,6 @@ func populateVersion(name string) {
 }
 
 func installAddon(name string, source string, verb string) error {
-	failed := color.New(color.FgRed).SprintFunc()
-	// success := color.New(color.FgGreen).SprintFunc()
 	meta, err := downloadURL(name, source)
 	if err != nil {
 		fmt.Printf("%s: failed: %s\n", failed(name), err.Error())
@@ -132,7 +129,6 @@ func installAddon(name string, source string, verb string) error {
 
 			err = writeConfig()
 			if err != nil {
-				failed := color.New(color.FgRed).SprintFunc()
 				fmt.Printf("%s: failed to write configuration file '%s': %s\n", failed(name), configFile, err.Error())
 				return err
 			}
