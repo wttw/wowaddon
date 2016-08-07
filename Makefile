@@ -27,8 +27,9 @@ package: wowaddon wowaddon.exe
 
 .PHONY: catalog
 catalog:
+	rm -f addoncatalog.json.zip
 	cd ../wowslurp && go build && ./wowslurp
-	cp ../wowslurp/addoncatalog.json.zip .
+	cd ../wowslurp && zip -9 ../wowaddon/addoncatalog.json.zip addoncatalog.json
 
 .PHONY: ship
 ship: package catalog
