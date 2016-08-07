@@ -65,6 +65,7 @@ func bootstrapConfig() error {
 					config.Addons[name] = Addon{
 						Source:  source,
 						Folders: addon.Folder,
+						Version: "unknown",
 					}
 					populateVersion(name)
 					for _, dir := range addon.Folder {
