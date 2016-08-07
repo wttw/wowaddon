@@ -1,4 +1,5 @@
 # wowaddon
+
 Manager for World of Warcraft addons
 
 ## Features
@@ -15,7 +16,9 @@ Manager for World of Warcraft addons
 ## Installation
 
 Download the file from the [github release page](https://github.com/wttw/wowaddon/releases/latest),
-unzip it and put it somewhere on your path.
+for your operating system, unzip it and put it somewhere on your path. (If
+you're on Windows you can open a command prompt, cd to the directory where
+you unzipped it and run it from there.)
 
 Run `wowaddon environment`. If it can't find your World of Warcraft
 installation in the normal places you can set the environment variable
@@ -64,7 +67,6 @@ COMMANDS:
      info               Show information about installed addons
      fullinfo           Show toc metadata about installed addons
      bootstrap          Create a configuration file from existing addons
-     dlurl              Find a download URL
      help, h            Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
@@ -75,30 +77,41 @@ GLOBAL OPTIONS:
    --version, -v                          print the version
 ```
 
+## Configuration files
+
+All configuration is stored in your World of Warcraft base directory.
+
+The addons installed and managed by `wowaddon` are stored in the
+`addons.json` file, with a backup copy stored in `addons.json.bak`
+
+The catalog of know addons (used for bootstrapping and searching) is
+stored in `addoncatalog.json.zip` and `addoncatalog.json`. This will
+be fetched and updated automatically.
+
 ## Compilation
 
 Install pre-requisites and build
 ```
-go get -u .
-go build
+go get github.com/wttw/wowaddon
 ```
 
 This will create a single binary, `wowaddon` or `wowaddon.exe` that can
 be copied to any machine and run with no other prerequisites.
 
 ## Inspiration
+
 This tool was inspired by [wow-cli](https://github.com/zekesonxx/wow-cli),
 a similar tool written in Javascript/node.
 
-The user interface is very similar, and the configuration file is nearly
-identical - if you're using `wow-cli` you can copy your `.addons.json`
-to `addons.json`, remove any addons sourced from anywhere other than
-Curse and it should work with `wowaddon`.
-
 ## Issues
+
 Coloured text works on Windows 10, OS X and (probably) Linux. It doesn't
 work in a vanilla Windows 7 command prompt. It's still perfectly usable,
 but not as pretty.
 
+While it's tested on OS X, it isn't tested with a real WoW installation (I
+don't have the disk space for that).
+
 ## License
+
 [Two-clause BSD](LICENSE)
