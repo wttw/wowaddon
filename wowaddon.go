@@ -17,7 +17,7 @@ const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
 const catalogFilename = "addoncatalog.json"
 
-const numericVersion = 0x300
+const numericVersion = 0x400
 
 // Version is the app version
 var Version string
