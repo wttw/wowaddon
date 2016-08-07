@@ -17,8 +17,10 @@ const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
 const catalogFilename = "addoncatalog.json"
 
+const numericVersion = 0x300
+
 // Version is the app version
-const Version = "0.3.0"
+var Version string
 
 var wowDir string
 var userAgent string
@@ -55,6 +57,7 @@ var config = Config{
 }
 
 func main() {
+	Version = fmt.Sprintf("%d.%d.%d", (numericVersion&0xff0000)>>16, (numericVersion&0xff00)>>8, numericVersion&0xff)
 	app := cli.NewApp()
 	app.Name = "wowaddon"
 	app.Usage = "Install WoW addons"

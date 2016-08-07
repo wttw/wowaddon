@@ -27,6 +27,7 @@ type ISource struct {
 // Index contains all published data
 type Index struct {
 	Version    int                `json:"app_version"`
+	Abort      string             `json:"abort"`
 	Created    time.Time          `json:"created"`
 	Preference []string           `json:"preference"`
 	Sources    map[string]ISource `json:"source"`
@@ -47,7 +48,13 @@ func loadCatalogFromJSON() error {
 			fmt.Printf("I couldn't parse catalog file '%s': %s\nMaybe fix it up, or delete it and start over?\n", configFile, err.Error())
 			os.Exit(1)
 		}
-
+		if catalog.Abort != "" {
+			fmt.Printf("%s\n", failed(catalog.Abort))
+			os.Exit(1)
+		}
+		if catalog.Version > numericVersion {
+			fmt.Printf("%s: There is an update to wowaddon available\nSee https://github.com/wttw/wowaddon/releases/latest\n", warn("Out of date"))
+		}
 		return nil
 	}
 	return err

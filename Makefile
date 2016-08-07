@@ -26,9 +26,9 @@ package: wowaddon wowaddon.exe
 	zip -9 wowaddon-windows-$(DASHVERSION).zip wowaddon.exe
 
 .PHONY: catalog
-catalog:
+catalog: wowaddon
 	rm -f addoncatalog.json.zip
-	cd ../wowslurp && go build && ./wowslurp
+	cd ../wowslurp && go build && APP_VERSION=`../wowaddon/wowaddon releasetag` ./wowslurp
 	cd ../wowslurp && zip -9 ../wowaddon/addoncatalog.json.zip addoncatalog.json
 
 .PHONY: ship
