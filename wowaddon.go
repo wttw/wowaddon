@@ -169,7 +169,7 @@ func main() {
 			Usage:  "display release tag",
 			Hidden: true,
 			Action: func(c *cli.Context) error {
-				fmt.Printf("v%s\n", app.Version)
+				fmt.Printf("%s\n", app.Version)
 				return nil
 			},
 		},

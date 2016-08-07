@@ -74,6 +74,10 @@ func bootstrapConfig() error {
 			}
 		}
 	}
+	err = writeConfig()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s\n", success("Configuration created"))
 	return nil
 }
