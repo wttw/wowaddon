@@ -77,7 +77,7 @@ func installFromMeta(meta AddonMeta) (Addon, error) {
 					subdirs = append(subdirs, dirname)
 				}
 			}
-			writer, err := os.OpenFile(elPath, os.O_WRONLY|os.O_CREATE, f.Mode())
+			writer, err := os.OpenFile(elPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
 			if err != nil {
 				return ret, err
 			}
