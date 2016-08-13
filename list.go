@@ -57,10 +57,14 @@ func list(c *cli.Context) error {
 			fmt.Printf("%s: not installed\n", failed(name))
 			continue
 		}
+		locked := ""
+		if addon.Locked {
+			locked = "(locked) "
+		}
 		if wowV != 0 && addon.Interface != 0 && addon.Interface < wowV {
-			fmt.Printf("%s: (out of date) version %s installed\n", warn(name), addon.Version)
+			fmt.Printf("%s: %s(out of date) version %s installed\n", warn(name), locked, addon.Version)
 		} else {
-			fmt.Printf("%s: version %s installed\n", success(name), addon.Version)
+			fmt.Printf("%s: %sversion %s installed\n", success(name), locked, addon.Version)
 		}
 	}
 	orphans := []string{}

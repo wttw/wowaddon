@@ -49,7 +49,7 @@ USAGE:
    wowaddon [global options] command [command options] [arguments...]
    
 VERSION:
-   0.3.0
+   0.4.1
    
 AUTHOR(S):
    Steve Atkins <steve@blighty.com> 
@@ -67,6 +67,8 @@ COMMANDS:
      info               Show information about installed addons
      fullinfo           Show toc metadata about installed addons
      bootstrap          Create a configuration file from existing addons
+     lock               Lock an addon so it won't be automatically updated
+     unlock             Unlock a locked addon, so it will be automatically updated
      help, h            Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
@@ -78,6 +80,7 @@ GLOBAL OPTIONS:
    --help, -h                             show help
    --version, -v                          print the version
    
+
 ```
 
 ## Configuration files
@@ -96,6 +99,7 @@ be fetched and updated automatically.
 Install pre-requisites and build
 ```
 go get github.com/wttw/wowaddon
+go install
 ```
 
 This will create a single binary, `wowaddon` or `wowaddon.exe` that can

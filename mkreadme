@@ -1,0 +1,20 @@
+#!/usr/bin/env perl
+
+use strict;
+open IF, 'README.md' or die "Can't open README.md: $!\n";
+my $helptext = `./wowaddon -h`;
+
+open OF, '>', 'README.md.tmp' or die "Can't create README.md.tmp: $!\n";
+
+my $quoteseen=0;
+while(<IF>) {
+  chomp;
+  if(/^```/) {
+    $quoteseen++;
+    print OF "$_\n$helptext\n" if $quoteseen == 1;
+  }
+  print OF "$_\n" if $quoteseen != 1;
+}
+
+unlink 'README.md' or die "unlink: $!\n";
+rename 'README.md.tmp', 'README.md' or die "rename: $!\n";

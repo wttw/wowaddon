@@ -19,6 +19,9 @@ wowaddon: *.go
 wowaddon.exe: *.go
 	GOOS=windows go build
 
+README.md: wowaddon mkreadme
+	perl mkreadme
+
 .PHONY: package
 package: wowaddon wowaddon.exe
 	rm -f wowaddon-osx-$(DASHVERSION).zip wowaddon-windows-$(DASHVERSION).zip

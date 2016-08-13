@@ -7,13 +7,12 @@ import (
 )
 
 func update(c *cli.Context) error {
-	var addons []string
+	addons := []string{}
 	if len(c.Args()) == 0 {
-		addons = make([]string, len(config.Addons))
-		i := 0
-		for k := range config.Addons {
-			addons[i] = k
-			i++
+		for name, addon := range config.Addons {
+			if !addon.Locked {
+				addons = append(addons, name)
+			}
 		}
 	} else {
 		addons = c.Args()
@@ -26,6 +25,10 @@ func update(c *cli.Context) error {
 		addon, ok := config.Addons[name]
 		if !ok {
 			fmt.Printf("%s: isn't installed\n", failed(name))
+			continue
+		}
+		if addon.Locked {
+			fmt.Printf("%s: locked, not updating\n", failed(name))
 			continue
 		}
 		meta, err := downloadURL(name, addon.Source)
@@ -56,6 +59,9 @@ func update(c *cli.Context) error {
 func checkupdate(c *cli.Context) error {
 	updated := 0
 	for name, addon := range config.Addons {
+		if addon.Locked {
+			continue
+		}
 		meta, err := downloadURL(name, addon.Source)
 		if err != nil {
 			fmt.Printf("%s: failed to retrieve metadata: %s\n", failed(name), err.Error())

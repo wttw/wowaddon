@@ -17,7 +17,7 @@ const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
 const catalogFilename = "addoncatalog.json"
 
-const numericVersion = 0x401
+const numericVersion = 0x500
 
 // Version is the app version
 var Version string
@@ -42,6 +42,7 @@ type Addon struct {
 	Folders   []string `json:"folders"`
 	Interface int      `json:"interface"`
 	Zip       string   `json:"zipfile"`
+	Locked    bool     `json:"locked"`
 }
 
 // Config holds the configuration file
@@ -179,6 +180,16 @@ func main() {
 			Name:   "bootstrap",
 			Usage:  "Create a configuration file from existing addons",
 			Action: bootstrap,
+		},
+		{
+			Name:   "lock",
+			Usage:  "Lock an addon so it won't be automatically updated",
+			Action: lock,
+		},
+		{
+			Name:   "unlock",
+			Usage:  "Unlock a locked addon, so it will be automatically updated",
+			Action: unlock,
 		},
 		{
 			Name:   "dlurl",
