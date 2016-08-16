@@ -49,7 +49,7 @@ USAGE:
    wowaddon [global options] command [command options] [arguments...]
    
 VERSION:
-   0.4.1
+   0.5.0
    
 AUTHOR(S):
    Steve Atkins <steve@blighty.com> 
