@@ -10,6 +10,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/kardianos/osext"
+	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
 )
 
@@ -58,10 +59,6 @@ var config = Config{
 }
 
 func main() {
-	if err := EnableColor(); err != nil {
-		panic(err)
-	}
-
 	Version = fmt.Sprintf("%d.%d.%d", (numericVersion&0xff0000)>>16, (numericVersion&0xff00)>>8, numericVersion&0xff)
 	app := cli.NewApp()
 	app.Name = "wowaddon"
@@ -213,7 +210,7 @@ func main() {
 			Usage:  "display release tag",
 			Hidden: true,
 			Action: func(c *cli.Context) error {
-				fmt.Printf("%s\n", app.Version)
+				output.Printf("%s\n", app.Version)
 				return nil
 			},
 		},
@@ -255,20 +252,20 @@ func setup(c *cli.Context) error {
 		jsonParser := json.NewDecoder(cf)
 		err = jsonParser.Decode(&config)
 		if err != nil {
-			fmt.Printf("I couldn't parse configuration file '%s': %s\nMaybe fix it up, or delete it and start over?\n", configFile, err.Error())
+			output.Printf("I couldn't parse configuration file '%s': %s\nMaybe fix it up, or delete it and start over?\n", configFile, err.Error())
 			os.Exit(1)
 		}
 	} else {
-		fmt.Printf("Setting up your configuration...\n")
+		output.Printf("Setting up your configuration...\n")
 		err = bootstrapConfig()
 		if err != nil {
-			fmt.Printf("Failed to set up configuration: %s\n", err.Error())
+			output.Printf("Failed to set up configuration: %s\n", err.Error())
 		}
 	}
 
 	err = os.MkdirAll(cacheDir, 0755)
 	if err != nil {
-		fmt.Printf("Can't create directory '%s': %s\n", cacheDir, err.Error())
+		output.Printf("Can't create directory '%s': %s\n", cacheDir, err.Error())
 		os.Exit(1)
 	}
 

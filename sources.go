@@ -11,6 +11,7 @@ import (
 
 	"strings"
 
+	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
 )
 
@@ -151,7 +152,7 @@ func getZipfile(name string, url string, source string) (string, error) {
 	if err == nil {
 		return zipfile, nil
 	}
-	fmt.Printf("%s: Fetching from %s\n", name, url)
+	output.Printf("%s: Fetching from %s\n", name, url)
 
 	tempfile, err := ioutil.TempFile(cacheDir, fmt.Sprintf("downloading-%s", name))
 	if err != nil {

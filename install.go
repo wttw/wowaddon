@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
 )
 
@@ -124,7 +125,7 @@ func populateVersion(name string) {
 func installAddon(name string, source string, verb string) error {
 	meta, err := downloadURL(name, source)
 	if err != nil {
-		fmt.Printf("%s: failed: %s\n", failed(name), err.Error())
+		output.Printf("%s: failed: %s\n", failed(name), err.Error())
 	} else {
 		ao, err := installFromMeta(meta)
 
@@ -134,11 +135,11 @@ func installAddon(name string, source string, verb string) error {
 
 			err = writeConfig()
 			if err != nil {
-				fmt.Printf("%s: failed to write configuration file '%s': %s\n", failed(name), configFile, err.Error())
+				output.Printf("%s: failed to write configuration file '%s': %s\n", failed(name), configFile, err.Error())
 				return err
 			}
 		} else {
-			fmt.Printf("%s: failed: %s\n", failed(name), err.Error())
+			output.Printf("%s: failed: %s\n", failed(name), err.Error())
 		}
 	}
 	return nil
@@ -181,7 +182,7 @@ func purgeCache() {
 	}
 	cacheFiles, err := ioutil.ReadDir(cacheDir)
 	if err != nil {
-		fmt.Printf("Error reading cache directory: %s\n", err.Error())
+		output.Printf("Error reading cache directory: %s\n", err.Error())
 		return
 	}
 	for _, file := range cacheFiles {

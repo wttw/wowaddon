@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
 )
 
@@ -13,9 +14,9 @@ func dlurl(c *cli.Context) error {
 	for _, name := range c.Args() {
 		meta, err := downloadURL(name, addonSource)
 		if err != nil {
-			fmt.Printf("%s: %s\n", name, err.Error())
+			output.Printf("%s: %s\n", name, err.Error())
 		} else {
-			fmt.Printf("%s: %d %s\n", name, meta.Version, meta.URL)
+			output.Printf("%s: %d %s\n", name, meta.Version, meta.URL)
 		}
 	}
 	return nil
