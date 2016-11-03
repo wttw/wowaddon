@@ -58,6 +58,10 @@ var config = Config{
 }
 
 func main() {
+	if err := EnableColor(); err != nil {
+		panic(err)
+	}
+
 	Version = fmt.Sprintf("%d.%d.%d", (numericVersion&0xff0000)>>16, (numericVersion&0xff00)>>8, numericVersion&0xff)
 	app := cli.NewApp()
 	app.Name = "wowaddon"
