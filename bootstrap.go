@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"strings"
 
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func bootstrap(c *cli.Context) error {
@@ -32,12 +32,12 @@ func bootstrapConfig() error {
 		if strings.HasPrefix(f.Name(), ".") {
 			continue
 		}
-		// fmt.Printf("dir %s found\n", f.Name())
+		// output.Printf("dir %s found\n", f.Name())
 		dirs[f.Name()] = false
 	}
 
 	for _, source := range catalog.Preference {
-		// fmt.Printf("catalog source: %s\n", source)
+		// output.Printf("catalog source: %s\n", source)
 		for name, addon := range catalog.Sources[source].Addons {
 			if len(addon.Folder) == 0 {
 				continue
@@ -45,7 +45,7 @@ func bootstrapConfig() error {
 			possible := true
 			someunused := false
 			for _, dir := range addon.Folder {
-				// fmt.Printf("Checking for %s\n", dir)
+				// output.Printf("Checking for %s\n", dir)
 				used, ok := dirs[dir]
 				if !ok {
 					possible = false
@@ -57,9 +57,9 @@ func bootstrapConfig() error {
 			}
 			if possible {
 				if !someunused {
-					fmt.Printf("Multiple addons (%s) use directories %s - check configuration\n", name, strings.Join(addon.Folder, ", "))
+					output.Printf("Multiple addons (%s) use directories %s - check configuration\n", name, strings.Join(addon.Folder, ", "))
 				} else {
-					// fmt.Printf("Found addon %s\n", name)
+					// output.Printf("Found addon %s\n", name)
 					config.Addons[name] = Addon{
 						Source:  source,
 						Folders: addon.Folder,
@@ -77,6 +77,6 @@ func bootstrapConfig() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s\n", success("Configuration created"))
+	output.Printf("%s\n", success("Configuration created"))
 	return nil
 }

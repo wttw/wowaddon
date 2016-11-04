@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"regexp"
 	"strings"
 
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 var useRegex bool
@@ -15,7 +15,7 @@ func search(c *cli.Context) error {
 	wowV := wowVersion()
 
 	if len(c.Args()) == 0 {
-		fmt.Printf("You must provide a string to search for\n")
+		output.Printf("You must provide a string to search for\n")
 		os.Exit(1)
 	}
 	loadCatalog()
@@ -26,7 +26,7 @@ func search(c *cli.Context) error {
 		if useRegex {
 			_, err := regexp.Compile(w)
 			if err != nil {
-				fmt.Printf("%s: '%s' isn't a valid regex: %s\n", failed("Error"), w, err.Error())
+				output.Printf("%s: '%s' isn't a valid regex: %s\n", failed("Error"), w, err.Error())
 				os.Exit(1)
 			}
 			words = append(words, w)
@@ -39,7 +39,7 @@ func search(c *cli.Context) error {
 
 	re, err := regexp.Compile(pattern)
 	if err != nil {
-		fmt.Printf("%s: Failed to compile '%s': %s\n", failed("Internal Error"), pattern, err.Error())
+		output.Printf("%s: Failed to compile '%s': %s\n", failed("Internal Error"), pattern, err.Error())
 	}
 
 	for _, source := range catalog.Preference {
@@ -66,12 +66,12 @@ func search(c *cli.Context) error {
 			}
 			if namematch || titlematch || len(notes) > 0 {
 				if addon.Interface >= wowV {
-					fmt.Printf("%s: %s\n", success(name), addon.Title)
+					output.Printf("%s: %s\n", success(name), addon.Title)
 				} else {
-					fmt.Printf("%s: %s (out of date)\n", failed(name), addon.Title)
+					output.Printf("%s: %s (out of date)\n", failed(name), addon.Title)
 				}
 				for _, note := range notes {
-					fmt.Printf("  %s\n", note)
+					output.Printf("  %s\n", note)
 				}
 			}
 		}

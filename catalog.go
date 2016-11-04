@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"fmt"
+	"github.com/wttw/wowaddon/output"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -45,15 +46,15 @@ func loadCatalogFromJSON() error {
 		jsonParser := json.NewDecoder(file)
 		err = jsonParser.Decode(&catalog)
 		if err != nil {
-			fmt.Printf("I couldn't parse catalog file '%s': %s\nMaybe fix it up, or delete it and start over?\n", configFile, err.Error())
+			output.Printf("I couldn't parse catalog file '%s': %s\nMaybe fix it up, or delete it and start over?\n", configFile, err.Error())
 			os.Exit(1)
 		}
 		if catalog.Abort != "" {
-			fmt.Printf("%s\n", failed(catalog.Abort))
+			output.Printf("%s\n", failed(catalog.Abort))
 			os.Exit(1)
 		}
 		if catalog.Version > numericVersion {
-			fmt.Printf("%s: There is an update to wowaddon available\nSee https://github.com/wttw/wowaddon/releases/latest\n", warn("Out of date"))
+			output.Printf("%s: There is an update to wowaddon available\nSee https://github.com/wttw/wowaddon/releases/latest\n", warn("Out of date"))
 		}
 		return nil
 	}
@@ -75,24 +76,24 @@ func loadCatalogFromZip() error {
 			}
 			of, err := os.OpenFile(catalogFile, os.O_WRONLY|os.O_CREATE, 0644)
 			if err != nil {
-				fmt.Printf("Couldn't create catalog file %s: %s\n", catalogFile, err.Error())
+				output.Printf("Couldn't create catalog file %s: %s\n", catalogFile, err.Error())
 				os.Exit(1)
 			}
 			_, err = io.Copy(of, rc)
 			if err != nil {
-				fmt.Printf("Couldn't create catalog file %s: %s\n", catalogFile, err.Error())
+				output.Printf("Couldn't create catalog file %s: %s\n", catalogFile, err.Error())
 				os.Exit(1)
 			}
 			err = of.Close()
 			if err != nil {
-				fmt.Printf("Couldn't create catalog file %s: %s\n", catalogFile, err.Error())
+				output.Printf("Couldn't create catalog file %s: %s\n", catalogFile, err.Error())
 				os.Exit(1)
 			}
 			config.CatalogDownloaded = time.Now()
 			config.NextCatalogUpdate = time.Now().Add(6 * time.Hour)
 			err = writeConfig()
 			if err != nil {
-				fmt.Printf("Failed to save configuration: %s\n", err.Error())
+				output.Printf("Failed to save configuration: %s\n", err.Error())
 				os.Exit(1)
 			}
 			err = loadCatalogFromJSON()
@@ -110,14 +111,14 @@ func loadCatalogFromZip() error {
 			// 	for name, data := range catalog.Sources[source].Addons {
 			// 		err = index.Index(name, data)
 			// 		if err != nil {
-			// 			fmt.Printf("Problem indexing '%+v': %s\n", data, err.Error())
+			// 			output.Printf("Problem indexing '%+v': %s\n", data, err.Error())
 			// 		}
 			// 	}
 			// }
 
 			// err = index.Close()
 			// if err != nil {
-			// 	fmt.Printf("Problem creating index: %s\n", err.Error())
+			// 	output.Printf("Problem creating index: %s\n", err.Error())
 			// }
 
 			return nil
@@ -151,8 +152,8 @@ func fetchCatalog(current time.Time) error {
 		return fmt.Errorf("No assets found in response")
 	}
 
-	// fmt.Printf("%T\n", assetsmap)
-	// fmt.Printf("%+v\n", assetsmap)
+	// output.Printf("%T\n", assetsmap)
+	// output.Printf("%+v\n", assetsmap)
 	assets, ok := assetsmap.([]interface{})
 	if !ok {
 		return fmt.Errorf("Couldn't decode assets")
@@ -177,7 +178,7 @@ func fetchCatalog(current time.Time) error {
 			// not stale
 			return nil
 		}
-		fmt.Printf("Fetching catalog from %s\n", dlurl)
+		output.Printf("Fetching catalog from %s\n", dlurl)
 		resp, err := Get(dlurl)
 		if err != nil {
 			return err
@@ -217,12 +218,12 @@ func loadCatalog() error {
 		if err != nil {
 			err = fetchCatalog(time.Unix(0, 0))
 			if err != nil {
-				fmt.Printf("Failed to fetch catalog: %s\n", err.Error())
+				output.Printf("Failed to fetch catalog: %s\n", err.Error())
 				os.Exit(1)
 			}
 			err = loadCatalogFromZip()
 			if err != nil {
-				fmt.Printf("Failed to load catalog just fetched: %s\n", err.Error())
+				output.Printf("Failed to load catalog just fetched: %s\n", err.Error())
 				os.Exit(1)
 			}
 		}
@@ -230,12 +231,12 @@ func loadCatalog() error {
 	if config.NextCatalogUpdate.Before(time.Now()) {
 		err = fetchCatalog(config.CatalogDownloaded)
 		if err != nil {
-			fmt.Printf("Failed to fetch catalog: %s\n", err.Error())
+			output.Printf("Failed to fetch catalog: %s\n", err.Error())
 			os.Exit(1)
 		}
 		err = loadCatalogFromZip()
 		if err != nil {
-			fmt.Printf("Failed to load catalog just fetched: %s\n", err.Error())
+			output.Printf("Failed to load catalog just fetched: %s\n", err.Error())
 			os.Exit(1)
 		}
 	}

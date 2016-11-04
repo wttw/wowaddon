@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func lock(c *cli.Context) error {
@@ -14,15 +15,15 @@ func lock(c *cli.Context) error {
 	for _, name := range addons {
 		addon, ok := config.Addons[name]
 		if !ok {
-			fmt.Printf("%s: isn't installed\n", failed(name))
+			output.Printf("%s: isn't installed\n", failed(name))
 			continue
 		}
 		if addon.Locked {
-			fmt.Printf("%s: already locked\n", warn(name))
+			output.Printf("%s: already locked\n", warn(name))
 		} else {
 			addon.Locked = true
 			config.Addons[name] = addon
-			fmt.Printf("%s: locked\n", success(name))
+			output.Printf("%s: locked\n", success(name))
 		}
 	}
 	return writeConfig()
@@ -43,15 +44,15 @@ func unlock(c *cli.Context) error {
 	for _, name := range addons {
 		addon, ok := config.Addons[name]
 		if !ok {
-			fmt.Printf("%s: isn't installed\n", failed(name))
+			output.Printf("%s: isn't installed\n", failed(name))
 			continue
 		}
 		if addon.Locked {
 			addon.Locked = false
 			config.Addons[name] = addon
-			fmt.Printf("%s: unlocked\n", success(name))
+			output.Printf("%s: unlocked\n", success(name))
 		} else {
-			fmt.Printf("%s: already unlocked\n", warn(name))
+			output.Printf("%s: already unlocked\n", warn(name))
 		}
 	}
 	return writeConfig()

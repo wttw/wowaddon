@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func update(c *cli.Context) error {
@@ -24,23 +23,23 @@ func update(c *cli.Context) error {
 	for _, name := range addons {
 		addon, ok := config.Addons[name]
 		if !ok {
-			fmt.Printf("%s: isn't installed\n", failed(name))
+			output.Printf("%s: isn't installed\n", failed(name))
 			continue
 		}
 		if addon.Locked {
-			fmt.Printf("%s: locked, not updating\n", failed(name))
+			output.Printf("%s: locked, not updating\n", failed(name))
 			continue
 		}
 		meta, err := downloadURL(name, addon.Source)
 		if err != nil {
-			fmt.Printf("%s: failed to retrieve metadata: %s\n", failed(name), err.Error())
+			output.Printf("%s: failed to retrieve metadata: %s\n", failed(name), err.Error())
 			continue
 		}
 		if meta.Version == addon.Version {
 			if wowV != 0 && addon.Interface != 0 && addon.Interface < wowV {
-				fmt.Printf("%s: (out of date) no update from %s available\n", warn(name), addon.Version)
+				output.Printf("%s: (out of date) no update from %s available\n", warn(name), addon.Version)
 			} else {
-				fmt.Printf("%s: up to date at version %s\n", success(name), addon.Version)
+				output.Printf("%s: up to date at version %s\n", success(name), addon.Version)
 				continue
 			}
 		}
@@ -49,7 +48,7 @@ func update(c *cli.Context) error {
 			updated++
 		}
 	}
-	fmt.Printf("%d addons updated\n", updated)
+	output.Printf("%d addons updated\n", updated)
 	if !config.KeepCache {
 		purgeCache()
 	}
@@ -64,18 +63,18 @@ func checkupdate(c *cli.Context) error {
 		}
 		meta, err := downloadURL(name, addon.Source)
 		if err != nil {
-			fmt.Printf("%s: failed to retrieve metadata: %s\n", failed(name), err.Error())
+			output.Printf("%s: failed to retrieve metadata: %s\n", failed(name), err.Error())
 			continue
 		}
 		if meta.Version != addon.Version {
-			fmt.Printf("%s: can be updated from %s to %s\n", success(name), addon.Version, meta.Version)
+			output.Printf("%s: can be updated from %s to %s\n", success(name), addon.Version, meta.Version)
 			updated++
 		}
 	}
 	if updated > 0 {
-		fmt.Printf("%d addons can be updated\n", updated)
+		output.Printf("%d addons can be updated\n", updated)
 	} else {
-		fmt.Printf("%s\n", success("You have the latest version of everything"))
+		output.Printf("%s\n", success("You have the latest version of everything"))
 	}
 	return nil
 }

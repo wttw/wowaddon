@@ -1,18 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func uninstall(c *cli.Context) error {
 	for _, name := range c.Args() {
 		addon, ok := config.Addons[name]
 		if !ok {
-			fmt.Printf("%s: %s: wasn't installed by me\n", name, failed("failed"))
+			output.Printf("%s: %s: wasn't installed by me\n", name, failed("failed"))
 		} else {
 			for _, d := range addon.Folders {
 				// For each folder in the addon we're removing
@@ -33,20 +33,20 @@ func uninstall(c *cli.Context) error {
 					dir := filepath.Join(addonDir, d)
 					err := os.RemoveAll(dir)
 					if err != nil {
-						fmt.Printf("%s: %s: failed to remove directory %s: %s\n", name, failed("failed"), dir, err.Error())
+						output.Printf("%s: %s: failed to remove directory %s: %s\n", name, failed("failed"), dir, err.Error())
 					} else {
-						fmt.Printf("%s: directory %s %s\n", name, d, success("removed"))
+						output.Printf("%s: directory %s %s\n", name, d, success("removed"))
 					}
 				} else {
-					fmt.Printf("%s: directory %s not removed, also used by %s\n", name, d, usedby)
+					output.Printf("%s: directory %s not removed, also used by %s\n", name, d, usedby)
 				}
 			}
 			delete(config.Addons, name)
 			err := writeConfig()
 			if err != nil {
-				fmt.Printf("%s: Failed to update configuration file %s: %s", failed("failed"), configFile, err.Error())
+				output.Printf("%s: Failed to update configuration file %s: %s", failed("failed"), configFile, err.Error())
 			} else {
-				fmt.Printf("%s: %s\n", name, success("uninstalled"))
+				output.Printf("%s: %s\n", name, success("uninstalled"))
 			}
 		}
 	}

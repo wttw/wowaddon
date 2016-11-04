@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func blame(c *cli.Context) error {
@@ -15,7 +14,7 @@ func blame(c *cli.Context) error {
 		for _, dir := range meta.Folders {
 			_, ok := dirs[dir]
 			if ok {
-				fmt.Printf("%s: %s\n", dir, name)
+				output.Printf("%s: %s\n", dir, name)
 			}
 		}
 	}
