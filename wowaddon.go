@@ -10,8 +10,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/kardianos/osext"
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 const configFilename = "addons.json"

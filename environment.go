@@ -3,8 +3,8 @@ package main
 import (
 	"runtime"
 
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func environment(c *cli.Context) error {

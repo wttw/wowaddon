@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 var useRegex bool

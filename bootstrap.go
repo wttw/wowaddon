@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func bootstrap(c *cli.Context) error {

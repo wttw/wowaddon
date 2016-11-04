@@ -4,7 +4,7 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"fmt"
-	"github.com/pdbogen/wowaddon/output"
+	"github.com/wttw/wowaddon/output"
 	"io"
 	"io/ioutil"
 	"net/http"

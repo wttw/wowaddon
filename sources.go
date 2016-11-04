@@ -11,8 +11,8 @@ import (
 
 	"strings"
 
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 // AddonMeta holds the metadata for an addon

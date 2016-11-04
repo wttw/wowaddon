@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func dlurl(c *cli.Context) error {

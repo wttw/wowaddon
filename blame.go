@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/pdbogen/wowaddon/output"
 	"github.com/urfave/cli"
+	"github.com/wttw/wowaddon/output"
 )
 
 func blame(c *cli.Context) error {
