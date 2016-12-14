@@ -18,7 +18,7 @@ const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
 const catalogFilename = "addoncatalog.json"
 
-const numericVersion = 0x700
+const numericVersion = 0x701
 
 // Version is the app version
 var Version string
@@ -225,7 +225,7 @@ func setup(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	addonDir = filepath.Join(wowDir, "Interface", "Addons")
+	addonDir = filepath.Join(wowDir, "Interface", "AddOns")
 	err = os.MkdirAll(addonDir, 0755)
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("Can't create directory '%s': %s", addonDir, err.Error()), 1)
