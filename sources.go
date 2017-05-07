@@ -99,7 +99,7 @@ func tukuiDownloadURL(name string) (AddonMeta, error) {
 
 // curseDownloadURL gets the download URL and version for an addon from curse
 func curseDownloadURL(name string) (AddonMeta, error) {
-	url := fmt.Sprintf("http://www.curse.com/addons/wow/%s/download", name)
+	url := fmt.Sprintf("https://mods.curse.com/addons/wow/%s/download", name)
 	resp, err := Get(url)
 	if err != nil {
 		return AddonMeta{}, err
@@ -110,7 +110,7 @@ func curseDownloadURL(name string) (AddonMeta, error) {
 		return AddonMeta{}, err
 	}
 
-	downloadRe := regexp.MustCompile(`data-href="(http:\/\/addons\.curse\.cursecdn\.com\/files\/[^\n"]*)"`)
+	downloadRe := regexp.MustCompile(`data-href="(https?:\/\/addons\.curse\.cursecdn\.com\/files\/[^\n"]*)"`)
 	versionRe := regexp.MustCompile(`data-file="([0-9]+)"`)
 
 	dlmatch := downloadRe.FindSubmatch(body)

@@ -18,7 +18,7 @@ const configFilename = "addons.json"
 const cacheDirname = "ZipFiles"
 const catalogFilename = "addoncatalog.json"
 
-const numericVersion = 0x701
+const numericVersion = 0x800
 
 // Version is the app version
 var Version string
@@ -102,6 +102,7 @@ func main() {
 		},
 	}
 	app.Before = setup
+	app.Action = update
 	app.Commands = []cli.Command{
 		{
 			Name:    "install",

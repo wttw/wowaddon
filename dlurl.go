@@ -16,7 +16,7 @@ func dlurl(c *cli.Context) error {
 		if err != nil {
 			output.Printf("%s: %s\n", name, err.Error())
 		} else {
-			output.Printf("%s: %d %s\n", name, meta.Version, meta.URL)
+			output.Printf("%s: %s %s\n", name, meta.Version, meta.URL)
 		}
 	}
 	return nil
