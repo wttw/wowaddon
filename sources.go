@@ -33,12 +33,42 @@ func downloadURL(name string, source string) (AddonMeta, error) {
 		return tukuiDownloadURL(name)
 	case "":
 		if name == "tukui" || name == "elvui" {
-			return tukuiDownloadURL(name)
+			return uiDownloadURL(name)
 		}
 		return curseDownloadURL(name)
 	default:
 		return AddonMeta{}, cli.NewExitError("Bad source '%s'. Must be one of curse or tukui", 1)
 	}
+}
+
+// Corner Case: tukui and elvui cannot use regular tukui API
+func uiDownloadURL(name string) (AddonMeta, error) {
+	url := fmt.Sprintf("https://www.tukui.org/download.php?ui=%s",name)
+	resp, err := Get(url)
+	if err != nil {
+		return AddonMeta{}, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return AddonMeta{}, err
+	}
+
+	downloadRe := regexp.MustCompile(fmt.Sprintf(`/downloads/%s-([0-9]+\.[0-9]+)\.zip`,name))
+
+	dlmatch := downloadRe.FindSubmatch(body)
+	if dlmatch == nil {
+		return AddonMeta{}, fmt.Errorf("%s not found at Tukui", name)
+	}
+
+	ret := AddonMeta{
+		Name:    name,
+		URL:     fmt.Sprintf("https://www.tukui.org%s",string(dlmatch[0])),
+		Source:  "tukui",
+		Version: string(dlmatch[1]),
+	}
+
+	return ret, nil
 }
 
 func tukString(project map[string]interface{}, name string) (string, error) {
@@ -55,8 +85,7 @@ func tukString(project map[string]interface{}, name string) (string, error) {
 
 // tukuiDownloadURL gets the download URL and version for an addon from tukui
 func tukuiDownloadURL(name string) (AddonMeta, error) {
-	url := fmt.Sprintf("http://www.tukui.org/api.php?project=%s", name)
-	resp, err := Get(url)
+	resp, err := Get("https://www.tukui.org/api.php?addons=all")
 	if err != nil {
 		return AddonMeta{}, err
 	}
@@ -70,30 +99,38 @@ func tukuiDownloadURL(name string) (AddonMeta, error) {
 	if len(projects) < 1 {
 		return AddonMeta{}, fmt.Errorf("Tukui didn't return metadata for %s", name)
 	}
+	var project map[string]interface{}
+
+	for _, proj := range projects {
+		addonName, err := tukString(proj, "name")
+		if err != nil {
+			continue
+		}
+		if addonName == name {
+			project = proj
+			break
+		}
+	}
+
+	if project == nil {
+		return AddonMeta{}, fmt.Errorf("Tukui could not find addon %s", name)
+	}
+
 	ret := AddonMeta{
 		Name:   name,
 		Source: "tukui",
 	}
 
-	ret.URL, err = tukString(projects[0], "url")
+	ret.URL, err = tukString(project, "url")
 	if err != nil {
 		return AddonMeta{}, err
 	}
 
-	version, err := tukString(projects[0], "version")
+	ret.Version, err = tukString(project, "version")
 	if err != nil {
 		return AddonMeta{}, err
 	}
-	// parts := strings.Split(version, ".")
-	// nver := 0
-	// for _, part := range parts {
-	// 	np, err := strconv.Atoi(part)
-	// 	if err != nil {
-	// 		return AddonMeta{}, fmt.Errorf("Tukui returned version '%s', which I couldn't parse: %s", version, err.Error())
-	// 	}
-	// 	nver = nver*1000 + np
-	// }
-	ret.Version = version
+
 	return ret, nil
 }
 
@@ -119,12 +156,11 @@ func curseDownloadURL(name string) (AddonMeta, error) {
 	}
 
 	ret := AddonMeta{
-		Name:   name,
-		URL:    fmt.Sprintf("https://www.curseforge.com/wow/addons/%s",string(dlmatch[0])),
-		Source: "curse",
+		Name:    name,
+		URL:     fmt.Sprintf("https://www.curseforge.com/wow/addons/%s",string(dlmatch[0])),
+		Source:  "curse",
+		Version: string(dlmatch[1]),
 	}
-
-	ret.Version = string(dlmatch[1])
 
 	return ret, nil
 }
