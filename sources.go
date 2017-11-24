@@ -99,7 +99,7 @@ func tukuiDownloadURL(name string) (AddonMeta, error) {
 
 // curseDownloadURL gets the download URL and version for an addon from curse
 func curseDownloadURL(name string) (AddonMeta, error) {
-	url := fmt.Sprintf("https://mods.curse.com/addons/wow/%s/download", name)
+	url := fmt.Sprintf("https://www.curseforge.com/wow/addons/%s/download", name)
 	resp, err := Get(url)
 	if err != nil {
 		return AddonMeta{}, err
@@ -110,8 +110,7 @@ func curseDownloadURL(name string) (AddonMeta, error) {
 		return AddonMeta{}, err
 	}
 
-	downloadRe := regexp.MustCompile(`data-href="(https?:\/\/addons\.curse\.cursecdn\.com\/files\/[^\n"]*)"`)
-	versionRe := regexp.MustCompile(`data-file="([0-9]+)"`)
+	downloadRe := regexp.MustCompile(fmt.Sprintf(`%s\/download/([0-9]+)/file`,name))
 
 	dlmatch := downloadRe.FindSubmatch(body)
 	if dlmatch == nil {
@@ -121,17 +120,11 @@ func curseDownloadURL(name string) (AddonMeta, error) {
 
 	ret := AddonMeta{
 		Name:   name,
-		URL:    string(dlmatch[1]),
+		URL:    fmt.Sprintf("https://www.curseforge.com/wow/addons/%s",string(dlmatch[0])),
 		Source: "curse",
 	}
 
-	vermatch := versionRe.FindSubmatch(body)
-	if vermatch == nil {
-		// No match for version
-		return AddonMeta{}, fmt.Errorf("Version for %s not found at Curse", name)
-	}
-
-	ret.Version = string(vermatch[1])
+	ret.Version = string(dlmatch[1])
 
 	return ret, nil
 }
