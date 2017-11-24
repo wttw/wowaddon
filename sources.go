@@ -30,6 +30,9 @@ func downloadURL(name string, source string) (AddonMeta, error) {
 	case "curse":
 		return curseDownloadURL(name)
 	case "tukui":
+		if name == "tukui" || name == "elvui" {
+			return uiDownloadURL(name)
+		}
 		return tukuiDownloadURL(name)
 	case "":
 		if name == "tukui" || name == "elvui" {
